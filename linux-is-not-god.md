@@ -45,33 +45,33 @@ libapr1 libaprutil1 libxcb-composite0 libxcb-cursor0 libxcb-damage0 libxcb-xinpu
    **（图：Konsole的界面）**
    Linux的Shell（终端），始终是极客圈的“明星工具”——他们能在黑黢黢的窗口里敲几行命令，实现“批量重命名文件”“一键部署服务”“快速排查系统故障”，甚至觉得“用鼠标点图形界面是浪费时间”。但这份“高效”，对新手而言完全是另一番景象：面对空白的命令提示符，他们只会发呆；若终端突然刷出报错，哪怕只是**（图：一个小错误，类似No such command一类的）**“文件不存在”的小问题，也会瞬间慌神——“我是不是输错了什么？系统会不会崩了？”更关键的是，Linux里多数“硬核问题”的解决，都绕不开Shell。比如之前提到的达芬奇依赖缺失，新手得在终端里逐字输入sudo apt install libapr1 libaprutil1 libxcb-composite0，少打一个空格、拼错一个包名，就会提示“无法定位软件包”；想安装.run格式的软件，得先输chmod +x文件名.run赋予执行权限，再输./文件名.run启动安装程序——新手既不懂“chmod+x”是“给权限”，也不知道“./”代表“当前目录”，若直接双击.run文件没反应，只会觉得“软件坏了”，根本想不到要打开终端。再到更复杂的驱动安装，**（图：手动去安装NVIDIA的驱动步骤）**，整个过程要在终端里完成一整套“操作流”，以手动配置NVIDIA显卡驱动为例：
    >1. 准备工作
-    确认显卡型号： 
-   lspci | grep -i nvidia
-    禁用 Nouveau 驱动（避免冲突）： 
-   sudo bash -c 'echo -e "blacklist nouveau\noptions nouveau modeset=0" > /etc/modprobe.d/blacklist-nouveau.conf'
-   sudo update-initramfs -u # Ubuntu/Debian
-   sudo dracut --force # CentOS/RHEL
+   > 确认显卡型号： 
+   >lspci | grep -i nvidia
+   > 禁用 Nouveau 驱动（避免冲突）： 
+   >sudo bash -c 'echo -e "blacklist nouveau\noptions nouveau modeset=0" > /etc/modprobe.d/blacklist-nouveau.conf'
+   >sudo update-initramfs -u # Ubuntu/Debian
+   >sudo dracut --force # CentOS/RHEL
    >2. 下载 NVIDIA 驱动
-    前往 NVIDIA 官网，根据显卡型号下载对应的 .run 文件。
+   > 前往 NVIDIA 官网，根据显卡型号下载对应的 .run 文件。
    >3. 安装驱动
-    进入纯命令行模式：
-   sudo systemctl set-default multi-user.target
-   sudo reboot
-    停止显示管理器：
-   sudo systemctl stop gdm # GNOME 桌面环境
-   sudo systemctl stop lightdm # LightDM 桌面环境
-    赋予执行权限并运行安装程序：
-   chmod +x NVIDIA-Linux-*.run
-   sudo ./NVIDIA-Linux-*.run
-    安装过程中选项： 是否注册 DKMS：建议选择 Yes。 是否安装 32 位兼容库：根据需求选择。 
-    恢复图形界面：
-   sudo systemctl set-default graphical.target
-   sudo reboot
+   > 进入纯命令行模式：
+   >sudo systemctl set-default multi-user.target
+   >sudo reboot
+   > 停止显示管理器：
+   >sudo systemctl stop gdm # GNOME 桌面环境
+   >sudo systemctl stop lightdm # LightDM 桌面环境
+   > 赋予执行权限并运行安装程序：
+   >chmod +x NVIDIA-Linux-*.run
+   >sudo ./NVIDIA-Linux-*.run
+   > 安装过程中选项： 是否注册 DKMS：建议选择 Yes。 是否安装 32 位兼容库：根据需求选择。 
+   > 恢复图形界面：
+   >sudo systemctl set-default graphical.target
+   >sudo reboot
    >4. 验证安装
-    加载驱动模块： 
-   sudo modprobe nvidia
-    检查驱动状态： 
-   nvidia-smi
+   > 加载驱动模块： 
+   >sudo modprobe nvidia
+   > 检查驱动状态： 
+   >nvidia-smi
    
    ——每个术语对新手都是“新知识”，更别提中途遇到“驱动版本与内核不兼容”，终端弹出满屏“kernel header not found”，连极客都要查文档调试，新手只会直接放弃。最让新手恐惧的，还有sudo权限的“双刃剑”。极客知道sudo是“临时获取管理员权限”，会谨慎输入每一条命令；但新手可能听信“解决问题要加sudo”，随意复制网上的命令——比如想清理系统被误导，输入了sudo rm -rf /（删除系统根目录），瞬间导致系统崩溃；就算没这么极端，也可能因sudo apt remove删错软件，连带删除依赖的桌面环境，重启后只剩命令行界面，新手只会懵在原地：“我的桌面怎么没了？系统是不是坏了？”他们不会反思“自己输错了命令”，反而会觉得“Linux太不稳定，一点错都不能犯”。这时总有人反驳：“Mint和Deepin不是都做了图形化优化，解决了99%的问题吗？”但恰恰是剩下的“1%”，成了新手的“致命门槛”——这1%不是“可有可无的小功能”，而是“必须解决的刚需问题”：比如Mint里WiFi突然连不上，图形化界面里反复点击“连接”都没用，最终还是要打开终端输nmcli dev status查设备状态、nmcli con up "WiFi名称"重连；Deepin里应用商店打不开，重启几次都无效，得输sudo apt clean && sudo apt update清理缓存再更新。对新手来说，这“1%的Shell场景”，本质是“100%的障碍”——他们选择Linux，可能只是想“安安静静用电脑”，而非“学习命令行语法”；他们期待“点鼠标就能解决所有问题”，而非“对着黑框框猜报错原因”。当Shell从“极客的效率工具”，变成“新手躲不开的必答题”，那种“明明想省事，却要更折腾”的无力感，比任何缺点都更能劝退他们。毕竟，没人愿意为了“用一次软件”“修一次WiFi”，先去学一门“命令行语言”。
    
