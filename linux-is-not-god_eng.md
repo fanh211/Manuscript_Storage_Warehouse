@@ -1,4 +1,3 @@
-```markdown
 ---
 title: 'Linux Is Not a God'
 date: 2025-10-15 22:00:00
